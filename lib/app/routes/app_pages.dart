@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:perfect/app/modules/filters/views/select_property_type.dart';
+import 'package:perfect/app/modules/recommend_to_frind/bindings/recommend_to_friend_binding.dart';
+import 'package:perfect/app/modules/recommend_to_frind/views/recommend_to_friend_view.dart';
 import 'package:perfect/app/modules/subscription/bindings/subsciption_binding.dart';
 import 'package:perfect/app/modules/subscription/views/subsciption_view.dart';
 
@@ -106,6 +109,16 @@ class AppPages {
       name: _Paths.HALP,
       page: () => HalpView(),
       binding: HalpBinding(),
+    ),
+    GetPage(
+      name: _Paths.SELECT_PROPERTY_TYEP,
+      page: () => SelectPropertyType(),
+      // binding: HalpBinding(),
+    ),
+    GetPage(
+      name: _Paths.RECOMMENDTOFRIEND,
+      page: () => RecommendToFriendView(),
+      binding: RecommendToFriendBinding(),
     ),
   ];
 }

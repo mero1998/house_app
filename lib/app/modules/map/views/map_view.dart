@@ -1,6 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/modules/filterresults/views/filterresults_view.dart';
+import 'package:perfect/app/modules/search/views/search_view.dart';
+import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/app/utils/drop_down_multilanguage.dart';
 
 import '../controllers/map_controller.dart';
 
@@ -10,7 +16,6 @@ class MapView extends GetView<MapController> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 1,
         leading: IconButton(
           onPressed: () {
@@ -18,7 +23,7 @@ class MapView extends GetView<MapController> {
           },
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: Colors.white,
             size: 14,
           ),
         ),
@@ -26,16 +31,30 @@ class MapView extends GetView<MapController> {
         title: Text(
           "Search Results",
           style: TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.search,
-              color: Colors.black,
+            child: PopupMenuButton<int>(
+              onCanceled: () => {print("Push")},
+              // color: Colors.amber,
+              child: Icon(
+                Icons.menu,
+                size: 20.0,
+                color: Colors.white,
+              ),
+              itemBuilder: (context) => [
+                //  PopupMenuDivider(),
+                PopupMenuItem(child: Text('Search'),
+                  onTap: () {
+                     Get.toNamed(Routes.FILTERRESULTS);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FilterresultsView(),));
+                  },),
+              ],
             ),
-          )
+          ),
+          DropDownMultiLanguage()
         ],
       ),
       body: SingleChildScrollView(
@@ -75,56 +94,56 @@ class MapView extends GetView<MapController> {
             // SizedBox(
             //   height: 10,
             // ),
-            Container(
-              height: size.height / 14,
-              width: size.width / 1,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          "assets/image/icon_filter.png",
-                          width: 15,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text("Sort")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Image.asset(
-                          "assets/image/icon_save_search.png",
-                          width: 15,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text("Save Search")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Image.asset(
-                          "assets/image/icon_pin.png",
-                          width: 15,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text("Map")
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Container(
+            //   height: size.height / 14,
+            //   width: size.width / 1,
+            //   decoration: BoxDecoration(color: Colors.white),
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         Row(
+            //           children: [
+            //             Image.asset(
+            //               "assets/image/icon_filter.png",
+            //               width: 15,
+            //             ),
+            //             SizedBox(
+            //               width: 5,
+            //             ),
+            //             Text("Sort")
+            //           ],
+            //         ),
+            //         Row(
+            //           children: [
+            //             Image.asset(
+            //               "assets/image/icon_save_search.png",
+            //               width: 15,
+            //             ),
+            //             SizedBox(
+            //               width: 5,
+            //             ),
+            //             Text("Save Search")
+            //           ],
+            //         ),
+            //         Row(
+            //           children: [
+            //             Image.asset(
+            //               "assets/image/icon_pin.png",
+            //               width: 15,
+            //             ),
+            //             SizedBox(
+            //               width: 5,
+            //             ),
+            //             Text("Map")
+            //           ],
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
             Container(
               height: MediaQuery.of(context).size.height/1.8,
               child: Stack(
@@ -150,90 +169,133 @@ class MapView extends GetView<MapController> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              height: 100,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: SizedBox.fromSize(
-                          size: Size.fromRadius(35), // Image radius
-                          child: Image.asset("assets/image/home.jpg",
-                              fit: BoxFit.cover),
-                        ),
+            // Container(
+            //   height: 100,
+            //   decoration: BoxDecoration(color: Colors.white),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //     children: [
+            //       Row(
+            //         children: [
+            //           ClipRRect(
+            //             borderRadius: BorderRadius.circular(10),
+            //             child: SizedBox.fromSize(
+            //               size: Size.fromRadius(35), // Image radius
+            //               child: Image.asset("assets/image/home.jpg",
+            //                   fit: BoxFit.cover),
+            //             ),
+            //           ),
+            //           SizedBox(
+            //             width: 10,
+            //           ),
+            //           Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               Row(
+            //                 children: [
+            //
+            //                   SizedBox(
+            //                     width: 5,
+            //                   ),
+            //                   Text(
+            //                     '\$ 9800.00',
+            //                     style: TextStyle(
+            //                         fontSize: 16, color: Colors.black),
+            //                   )
+            //                 ],
+            //               ),
+            //               SizedBox(
+            //                 height: 5,
+            //               ),
+            //               Row(
+            //                 children: [
+            //                   Image.asset(
+            //                       "assets/image/icon_address.png",
+            //                       width: 15
+            //                   ),
+            //                   SizedBox(
+            //                     width: 10,
+            //                   ),
+            //                   Text(
+            //                     "78587 Newcastle, \n Calabasas, California",
+            //                     style: TextStyle(
+            //                         fontSize: 13, color:  Colors.black54),
+            //                   )
+            //                 ],
+            //               ),
+            //
+            //               Row(
+            //                 children: [
+            //                   Image.asset("assets/image/icon_distance.png", width: 18,),
+            //                   SizedBox(
+            //                     width: 10,
+            //                   ),
+            //                   Text(
+            //                     "10.0 Miles",
+            //                     style: TextStyle(
+            //                         fontSize: 13, color: Colors.black54),
+            //                   )
+            //                 ],
+            //               ),
+            //             ],
+            //           ),
+            //         ],
+            //       ),
+            //       ClipRRect(
+            //         borderRadius: BorderRadius.circular(2),
+            //         child: SizedBox.fromSize(
+            //           size: Size.fromRadius(20), // Image radius
+            //           child: Image.asset("assets/image/add_logo.png",
+            //               fit: BoxFit.cover),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            SizedBox(
+              height: 130,
+              child: ListView.builder(
+                  itemCount: 10,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemBuilder: (context, index){
+                    return Container(
+                      // height: 90,
+                      decoration: BoxDecoration(
+                          border: Border.all()
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      margin: EdgeInsetsDirectional.all(2),
+                      child: Column(
                         children: [
-                          Row(
-                            children: [
-
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '\$ 9800.00',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
-                              )
-                            ],
+                          CachedNetworkImage(
+                            width: MediaQuery.of(context).size.width / 5 - 10,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            imageUrl: "https://media.istockphoto.com/photos/dream-home-luxury-house-success-suburban-house-picture-id1281554848?b=1&k=20&m=1281554848&s=170667a&w=0&h=s7X81b-3hfEGTYVkFKDOG7ZDySs57Tpw_WAETXi5xnQ=",
+                            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                CircularProgressIndicator(value: downloadProgress.progress),
+                            errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
                           ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Image.asset(
-                                  "assets/image/icon_address.png",
-                                  width: 15
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "78587 Newcastle, \n Calabasas, California",
-                                style: TextStyle(
-                                    fontSize: 13, color:  Colors.black54),
-                              )
-                            ],
-                          ),
-
-                          Row(
-                            children: [
-                              Image.asset("assets/image/icon_distance.png", width: 18,),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "10.0 Miles",
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.black54),
-                              )
-                            ],
-                          ),
+                          Text("Word"),
+                          Divider(),
+                          Text("\$55")
                         ],
                       ),
-                    ],
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: SizedBox.fromSize(
-                      size: Size.fromRadius(20), // Image radius
-                      child: Image.asset("assets/image/add_logo.png",
-                          fit: BoxFit.cover),
-                    ),
-                  ),
+                    );
+                  }),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Icon(Icons.location_city, color: mainColor,),
+                  Text("Company ABC", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
                 ],
               ),
-            ),
+            )
+
           ],
         ),
       ),

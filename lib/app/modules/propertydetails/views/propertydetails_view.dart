@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:perfect/app/data/constants.dart';
 import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/app/utils/drop_down_multilanguage.dart';
 
 import '../controllers/propertydetails_controller.dart';
 
@@ -17,7 +19,6 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 1,
         leading: IconButton(
           onPressed: (){
@@ -25,13 +26,13 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
           },
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: Colors.white,
             size: 14,
           ),
         ),
         centerTitle: true,
         title: Image.asset(
-          "assets/image/header_img.png",
+          "assets/image/logo-white.png",
           width: 160,
         ),
         actions: [
@@ -61,6 +62,7 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
               ),
             ),
           ),
+          DropDownMultiLanguage()
         ],
       ),
       body: SingleChildScrollView(
@@ -124,15 +126,16 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          "\$ 9000.00",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
+                        // Text(
+                        //   "\$ 9000.00",
+                        //   style: TextStyle(
+                        //       fontSize: 18, fontWeight: FontWeight.w600),
+                        // ),
                         // SizedBox(width: 10,),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Padding(
                                 padding: const EdgeInsets.all(4.0),
@@ -260,38 +263,41 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
                   SizedBox(
                     height: 10,
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Photos("assets/image/prop_1.png"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Photos("assets/image/prop_2.png"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Photos("assets/image/prop_3.png"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Photos("assets/image/prop_4.png"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Photos("assets/image/prop_5.png"),
-                      ],
-                    ),
-                  )
+                 SizedBox(
+                   height: 130,
+                   child: ListView.builder(
+                     itemCount: 10,
+                     scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                       physics: ScrollPhysics(),
+                       itemBuilder: (context, index){
+                         return Container(
+                           // height: 90,
+                           decoration: BoxDecoration(
+                               border: Border.all()
+                           ),
+                           margin: EdgeInsetsDirectional.all(2),
+                           child: Column(
+                             children: [
+                               CachedNetworkImage(
+                                 width: MediaQuery.of(context).size.width / 5 - 10,
+                                 height: 70,
+                                 fit: BoxFit.cover,
+                                 imageUrl: "https://media.istockphoto.com/photos/dream-home-luxury-house-success-suburban-house-picture-id1281554848?b=1&k=20&m=1281554848&s=170667a&w=0&h=s7X81b-3hfEGTYVkFKDOG7ZDySs57Tpw_WAETXi5xnQ=",
+                                 progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                     CircularProgressIndicator(value: downloadProgress.progress),
+                                 errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
+                               ),
+                               Text("Word"),
+                               Divider(),
+                               Text("\$55")
+                             ],
+                           ),
+                         );
+                       }),
+                 )
                 ],
               ),
-            ),
-            SizedBox(
-              height: 15,
             ),
             Divider(
               height: 5,
@@ -362,59 +368,59 @@ class PropertydetailsView extends GetView<PropertydetailsController> {
               color: Colors.black,
             ),
 
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Video Tour",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500)),
-                  IconButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.HALP);
-                    },
-                    icon: Icon(Icons.keyboard_arrow_right),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Divider(
-              height: 5,
-              color: Colors.black,
-            ),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Map View",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500)),
-                  IconButton(
-                    onPressed: () {
-                      Get.toNamed(Routes.HALP);
-                    },
-                    icon: Icon(Icons.keyboard_arrow_right),
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Divider(
-              height: 5,
-              color: Colors.black,
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 0.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text("Video Tour",
+            //           style: TextStyle(
+            //               fontSize: 16,
+            //               color: Colors.black,
+            //               fontWeight: FontWeight.w500)),
+            //       IconButton(
+            //         onPressed: () {
+            //           Get.toNamed(Routes.HALP);
+            //         },
+            //         icon: Icon(Icons.keyboard_arrow_right),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Divider(
+            //   height: 5,
+            //   color: Colors.black,
+            // ),
+            //
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 0.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text("Map View",
+            //           style: TextStyle(
+            //               fontSize: 16,
+            //               color: Colors.black,
+            //               fontWeight: FontWeight.w500)),
+            //       IconButton(
+            //         onPressed: () {
+            //           Get.toNamed(Routes.HALP);
+            //         },
+            //         icon: Icon(Icons.keyboard_arrow_right),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 10,
+            // ),
+            // Divider(
+            //   height: 5,
+            //   color: Colors.black,
+            // ),
 
             Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 15.0, 15.0, 0.0),

@@ -268,8 +268,8 @@ class RegistrationView extends GetView<RegistrationController> {
                     children: [
                       Center(
                           child: Image.asset(
-                        "assets/image/register_icon.png",
-                        width: 120,
+                        "assets/image/logo-house-app.png",
+                        width: 200,
                       )),
                       SizedBox(height: 25),
                       Text(
@@ -282,7 +282,7 @@ class RegistrationView extends GetView<RegistrationController> {
                       _buildFullNameRow(),
                       SizedBox(height: 15),
                       Text(
-                        "Job As a",
+                        "Job as a",
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w600,

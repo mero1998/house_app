@@ -18,6 +18,8 @@ abstract class Routes {
   static const EDITPROFILE = _Paths.EDITPROFILE;
   static const SUBSCIPTION = _Paths.SUBSCIPTION;
   static const HALP = _Paths.HALP;
+  static const SELECT_PROPERTY_TYEP = _Paths.SELECT_PROPERTY_TYEP;
+  static const RECOMMENDTOFRIEND = _Paths.RECOMMENDTOFRIEND;
 }
 
 abstract class _Paths {
@@ -37,4 +39,6 @@ abstract class _Paths {
   static const EDITPROFILE = '/editprofile';
   static const SUBSCIPTION = '/subsciption';
   static const HALP = '/halp';
+  static const SELECT_PROPERTY_TYEP = "/select_property_type";
+  static const RECOMMENDTOFRIEND = "/recommend-to-friend";
 }

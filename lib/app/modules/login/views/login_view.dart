@@ -176,8 +176,8 @@ class LoginView extends GetView<LoginController> {
                         children: [
                           Center(
                               child: Image.asset(
-                            "assets/image/logo.png",
-                            width: 120,
+                            "assets/image/logo-white.png",
+                            width: 200,
                           )),
                           SizedBox(height: 35),
                           Text(

@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/modules/contact_us/views/contact_us_view.dart';
+import 'package:perfect/app/modules/recommend_to_frind/views/recommend_to_friend_view.dart';
 import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/app/utils/drop_down_multilanguage.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -34,8 +38,8 @@ class HomeView extends GetView<HomeController> {
         onPressed: () {
           Get.toNamed('/filters');
           //Navigator.push(context,
-              //MaterialPageRoute(builder: (context) => ())
-              //);
+          //MaterialPageRoute(builder: (context) => ())
+          //);
         },
         child: Text('Start Search'),
       ),
@@ -46,9 +50,9 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.grey.shade500,
         title: Image.asset(
-          "assets/image/header_img.png",
+          "assets/image/logo-white.png",
           width: 160,
         ),
         centerTitle: true,
@@ -56,52 +60,90 @@ class HomeView extends GetView<HomeController> {
         leadingWidth: 70,
         actions: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PopupMenuButton<int>(
-              onCanceled: () => {print("Push")},
-              // color: Colors.amber,
-              child: Icon(
-                Icons.menu,
-                size: 20.0,
-                color: Colors.black,
-              ),
-              itemBuilder: (context) => [
-                //  PopupMenuDivider(),
-                PopupMenuItem(child: Text('Contact')),
-                PopupMenuDivider(),
-                PopupMenuItem(
-                    child: GestureDetector(
-                  child: Text('Add Profile'),
-                  onTap: () {
-                    Get.toNamed(Routes.EDITPROFILE);
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Container(
+                height: 40,
+                // width: size.width / 6,
+                child: OutlinedButton(
+                  style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white,
+                    primary: Color(0xff00DFB6),
+                    minimumSize: Size(40, 36),
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                    ),
+                  ),
+                  onPressed: () {
+                    // Get.toNamed('/map');
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => Search()));
                   },
-                )),
-                PopupMenuDivider(),
-                PopupMenuItem(
-                    child: GestureDetector(
-                      child: Text('Plans'),
-                      onTap: () {
-                        Get.toNamed(Routes.SUBSCIPTION);
-                      },
-                    )),
-                PopupMenuDivider(),
-                PopupMenuItem(child: Text('Recommend to a friend')),
-                PopupMenuDivider(),
+                  child: PopupMenuButton<int>(
+                    onCanceled: () => {print("Push")},
+                    // color: Colors.amber,
+                    child: Icon(
+                      Icons.menu,
+                      size: 20.0,
+                      color: Colors.white,
+                    ),
+                    itemBuilder: (context) => [
+                      //  PopupMenuDivider(),
+                      PopupMenuItem(
+                        child: Text('Contact'),
+                        onTap: () {
+                          Get.toNamed('/contact-us');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContactUsView(),
+                              ));
+                        },
+                      ),
+                      PopupMenuDivider(),
+                      PopupMenuItem(
+                          child: GestureDetector(
+                        child: Text('Add Profile'),
+                        onTap: () {
+                          Get.toNamed(Routes.EDITPROFILE);
+                        },
+                      )),
+                      PopupMenuDivider(),
+                      PopupMenuItem(
+                          child: GestureDetector(
+                        child: Text('Plans'),
+                        onTap: () {
+                          Get.toNamed(Routes.SUBSCIPTION);
+                        },
+                      )),
+                      PopupMenuDivider(),
+                      PopupMenuItem(
+                        child: Text('Recommend to a friend'),
+                        onTap: () {
+                          Get.toNamed("/recommend-to-friend");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RecommendToFriendView(),
+                              ));
+                        },
+                      ),
+                      PopupMenuDivider(),
 
-                PopupMenuItem(child: Text('Terms of use')),
-                PopupMenuDivider(),
-                PopupMenuItem(child: Text('Privacy Policy')),
-                PopupMenuItem(
-                    child: InkWell(
-                  child: Text('How to work'),
-                  onTap: () {
-                    Get.toNamed('/halp');
-
-                   },
-                )),
-              ],
-            ),
-          ),
+                      PopupMenuItem(child: Text('Terms of use')),
+                      PopupMenuDivider(),
+                      PopupMenuItem(child: Text('Privacy Policy')),
+                      PopupMenuItem(
+                          child: InkWell(
+                        child: Text('How to work'),
+                        onTap: () {
+                          Get.toNamed('/halp');
+                        },
+                      )),
+                    ],
+                  ),
+                ),
+              )),
+          DropDownMultiLanguage()
         ],
       ),
       body: Center(
@@ -109,6 +151,20 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 5,
+                child: CachedNetworkImage(
+                  imageUrl: "http://via.placeholder.com/350x150",
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(
+                          value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                    size: 60,
+                  ),
+                ),
+              ),
               _buildSearchButton(context),
               Divider(
                 height: 5,

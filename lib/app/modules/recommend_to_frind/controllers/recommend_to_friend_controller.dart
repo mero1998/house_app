@@ -1,23 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-class ContactUsController extends GetxController {
+class RecommendToFriendController extends GetxController {
   //TODO: Implement ContactUsController
 
-  GlobalKey<FormState> contactFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> recommendFormKey = GlobalKey<FormState>();
 
-  late TextEditingController emailController, contentController, nameController;
+  late TextEditingController emailController;
 
   var email = '';
-  var name = '';
-  var content = '';
+
   final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
     emailController = TextEditingController();
-    contentController = TextEditingController();
-    nameController = TextEditingController();
   }
 
   @override
@@ -28,8 +25,6 @@ class ContactUsController extends GetxController {
   @override
   void onClose() {
     emailController.dispose();
-    contentController.dispose();
-    nameController.dispose();
   }
 
   String? validateEmail(String value) {
@@ -46,11 +41,11 @@ class ContactUsController extends GetxController {
     return null;
   }
   void checkRegisterForm() {
-    final isValid = contactFormKey.currentState!.validate();
+    final isValid = recommendFormKey.currentState!.validate();
     if (!isValid) {
       return;
     }
-    contactFormKey.currentState!.save();
+    recommendFormKey.currentState!.save();
     doRegister();
   }
 
