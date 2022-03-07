@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/modules/editprofile/controllers/editprofile_controller.dart';
 import 'package:perfect/app/modules/filters/controllers/filters_controller.dart';
 import 'package:get/get.dart';
 class SelectPropertyType extends StatefulWidget {
 
+  bool isFilter;
+
+
+  SelectPropertyType({ required this.isFilter,});
   @override
   State<SelectPropertyType> createState() => _SelectPropertyTypeState();
 }
 
 class _SelectPropertyTypeState extends State<SelectPropertyType> {
-  List<String> propertyType =  [
-  "Residential Properties",
-  "Commercial Properties",
-  "Vacant Land"
-  ];
+  // List<String> propertyType =  [
+  // "Residential Properties",
+  // "Commercial Properties",
+  // "Vacant Land"
+  // ];
 
   List<String> selected = [];
 
@@ -41,33 +46,39 @@ class _SelectPropertyTypeState extends State<SelectPropertyType> {
         margin: EdgeInsets.only(top: 10),
         child: SizedBox(
           // height: SizeConfig.scaleHeight(currencyPv.cList.length*80),
-          child: ListView.separated(
-            padding: EdgeInsets.all(10),
-            separatorBuilder: (ctx,index)=>Divider(),
-            itemCount: 3,
-            itemBuilder: (ctx,index)=>
-                InkWell(
-                  onTap: (){
-                  FiltersController.to.selectProperty(index:index,propertyType:propertyType[index] );
-                   print(FiltersController.to.indexesProp);
-                   print(FiltersController.to.selectedProperty);
+          child: GetX<FiltersController>(
+           builder: (FiltersController controller) {
+             print(controller.propertyTypes.length);
+             return ListView.separated(
+               padding: EdgeInsets.all(10),
+               separatorBuilder: (ctx,index)=>Divider(),
+               itemCount: controller.propertyTypes.length,
+               itemBuilder: (ctx,index)=>
+                   InkWell(
+                     onTap: (){
+                    widget.isFilter ?    FiltersController.to.selectProperty(index:index,propertyType:controller.propertyTypes[index]!)
+                    : EditprofileController.to.selectProperty(index: index, propertyType: controller.propertyTypes[index]!);
+                       print(FiltersController.to.indexesProp);
+                       print(FiltersController.to.selectedProperty);
 
-                  },
-                  child: GetX(
-                    builder: (FiltersController controller) {
-                      return Row(
-                        children: [
-                          Text(propertyType[index]),
-                          Spacer(),
-                          Visibility(
-                              visible: controller.indexesProp.contains(index),
-                              child: Icon(Icons.check,color: mainColor,)),
-                        ],
-                      );
-                    },
+                     },
+                    child: GetX<FiltersController>(
+                     builder: (controller) {
+                       return Row(
+                         children: [
+                           Text(controller.propertyTypes[index]!.name!),
+                           Spacer(),
+                           Visibility(
+                               visible:widget.isFilter ? FiltersController.to.indexesProp.contains(index): EditprofileController.to.selectedPropertyTypeIndex.contains(index),
+                               child: Icon(Icons.check,color: mainColor,)),
+                         ],
+                       );
+                     },
 
-                  ),
-                ),
+                    ),
+                   ),
+             );
+           },
           ),
         ),
       ),

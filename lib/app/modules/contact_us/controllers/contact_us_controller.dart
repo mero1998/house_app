@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:perfect/app/api/api_settings.dart';
+import 'package:http/http.dart' as http;
 
 class ContactUsController extends GetxController {
   //TODO: Implement ContactUsController
@@ -51,11 +56,25 @@ class ContactUsController extends GetxController {
       return;
     }
     contactFormKey.currentState!.save();
-    doRegister();
+    contact();
   }
 
-  void doRegister() {
+  Future<bool> contact() async{
+    var url = Uri.parse(ApiSettings.CONTACT);
 
+    var response = await http.post(url, body: {
+      "name": nameController.text,
+      "email" : emailController.text,
+      "content": contentController.text,
+    });
+    print(response.statusCode);
+    var jsonResponse  = jsonDecode(response.body)['message'];
+    if (response.statusCode == 200) {
+      Get.snackbar("Success", jsonResponse,backgroundColor: Colors.green);
+      return true;
+    }
+    Get.snackbar("Filed", jsonResponse,backgroundColor: Colors.red);
+    return false;
   }
   void increment() => count.value++;
 }

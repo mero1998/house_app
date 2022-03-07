@@ -4,12 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:perfect/app/models/language.dart';
 import 'package:perfect/app/modules/filterresults/views/property_list_item.dart';
+import 'package:perfect/app/modules/filters/controllers/filters_controller.dart';
+import 'package:perfect/app/modules/map/views/map_view.dart';
 import 'package:perfect/app/modules/select_language/controller/select_language_contoller.dart';
 import 'package:perfect/app/utils/drop_down_multilanguage.dart';
 
 import '../controllers/filterresults_controller.dart';
 
 class FilterresultsView extends StatefulWidget {
+  
+ 
+
   @override
   State<FilterresultsView> createState() => _FilterresultsViewState();
 }
@@ -22,6 +27,7 @@ class _FilterresultsViewState extends State<FilterresultsView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -56,8 +62,12 @@ class _FilterresultsViewState extends State<FilterresultsView> {
                   ),
                 ),
                 onPressed: () {
-                  Get.toNamed('/map');
-                  //Navigator.push(context, MaterialPageRoute(builder: (context) => Search()));
+                  // Get.toNamed('/map');
+                  if(controller.propertiesFilter.isNotEmpty){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MapView(filterSearch: controller.propertiesFilter.value)));
+                  }else{
+                    Get.snackbar("Filed", "Not results for you", backgroundColor: Colors.red);
+                  }
                 },
                 child: Icon(Icons.add_location_outlined, color: Colors.white,)
               ),
@@ -112,60 +122,85 @@ class _FilterresultsViewState extends State<FilterresultsView> {
           DropDownMultiLanguage(),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: size.height / 14,
-              width: size.width / 1,
-              decoration: BoxDecoration(color: Colors.black54),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Newcastle Upon Tyne",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                    SizedBox(
-                      height: 2,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: GetX<FilterresultsController>(
+        builder: (controller) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: size.height / 7,
+                  width: size.width / 1,
+                  decoration: BoxDecoration(color: Colors.black54),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Up To \$12,000,Atleast 3 Bedrooms",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          "Address : ${FiltersController.to.address}",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                        SizedBox(
+                          height: 2,
                         ),
                         Text(
-                          "40 Results",
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                          "Selected property type : ${FiltersController.to.selectedProperty.map((element) => element.name)}",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                        SizedBox(
+                          height: 2,
+                        ),
+                        Text(
+                          "Selected house type :  ${FiltersController.to.selectedHouseType.map((element) => element.name)}",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                        SizedBox(
+                          height: 2,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "radius : ${FiltersController.to.radius}",
+                              style: TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                            Text(
+                              "${controller.propertiesFilter!.length} Results",
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 10,
+                ),
+            controller.isLoading.isTrue    ? Center(child: CircularProgressIndicator(),)
+                    :  controller.propertiesFilter.length == 0  ?  Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search , size: 70,),
+                Text("No results for your search."),
+              ],
+            ) :   ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: controller.propertiesFilter.length,
+                    itemBuilder:
+                        (BuildContext context, int index) {
+                      return PropertyListItem(
+                          property:
+                          controller.propertiesFilter[index]!);
+                    })
+              ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            ListView.builder(
-                primary: false,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount:
-                controller.propertyList.length,
-                itemBuilder:
-                    (BuildContext context, int index) {
-                  return PropertyListItem(
-                      property:
-                      controller.propertyList[index]);
-                })
-          ],
-        ),
+          );
+        },
+
       ),
     );
   }

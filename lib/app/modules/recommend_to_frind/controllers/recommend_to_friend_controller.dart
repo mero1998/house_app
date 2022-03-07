@@ -1,6 +1,12 @@
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:perfect/app/api/api_settings.dart';
+import 'package:http/http.dart' as http;
+import 'package:perfect/preferences/user_preferences.dart';
 class RecommendToFriendController extends GetxController {
   //TODO: Implement ContactUsController
 
@@ -46,11 +52,25 @@ class RecommendToFriendController extends GetxController {
       return;
     }
     recommendFormKey.currentState!.save();
-    doRegister();
+    recommendToFriend();
   }
 
-  void doRegister() {
+  Future<bool> recommendToFriend() async{
+    var url = Uri.parse(ApiSettings.RECOMMENDTOFRIEND);
 
+    var response = await http.post(url, body: {
+      "email" : emailController.text,
+    }, headers: {
+      HttpHeaders.authorizationHeader : UserPreferences().getToken(),
+    });
+    print(response.statusCode);
+    var jsonResponse  = jsonDecode(response.body)['message'];
+    if (response.statusCode == 200) {
+      Get.snackbar("Success", jsonResponse,backgroundColor: Colors.green);
+      return true;
+    }
+    Get.snackbar("Filed", jsonResponse,backgroundColor: Colors.red);
+    return false;
   }
   void increment() => count.value++;
 }

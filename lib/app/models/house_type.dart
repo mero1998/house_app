@@ -1,10 +1,10 @@
 
-class PropertyType {
+class HouseType {
  late int? id;
  late String? name;
 
 
-  PropertyType.fromJson(Map<String, dynamic> json) {
+  HouseType.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
   }

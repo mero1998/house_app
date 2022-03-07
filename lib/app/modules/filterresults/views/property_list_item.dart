@@ -2,18 +2,26 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:perfect/app/models/property.dart';
+import 'package:perfect/app/models/search_result.dart';
+import 'package:perfect/app/modules/propertydetails/controllers/propertydetails_controller.dart';
+import 'package:perfect/app/modules/propertydetails/views/propertydetails_view.dart';
 import 'package:perfect/app/routes/app_pages.dart';
 
 class PropertyListItem extends StatelessWidget {
 
-  final Property property;
+  final FilterResult  property;
   PropertyListItem({Key? key, required this.property}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // PropertydetailsController controller = Get.put(PropertydetailsController());
+
     return GestureDetector(
       onTap: (){
-        Get.toNamed(Routes.PROPERTYDETAILS);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PropertydetailsView(companyId: property.companyId ?? 0),));
+        // Get.toNamed(Routes.PROPERTYDETAILS);
+
+        // PropertydetailsController.to.getCompanyDetails(companyId: property.companyId!);
       },
       child: Container(
           decoration: BoxDecoration( //                    <-- BoxDecoration
@@ -30,16 +38,16 @@ class PropertyListItem extends StatelessWidget {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount:
-                    property.medias?.length,
+                    property.companyImages?.length,
                     itemBuilder:
                         (BuildContext context, int index) {
                       return Container(
-                          child: getImageListItem( context,property.medias![index].image!));
+                          child: getImageListItem( context,property.companyImages![index].imageUrl!,property.companyImages![index].keyword!,property.companyImages![index].price!));
                     }),
               ),
               SizedBox(height: 10,),
 
-              _getInfoRow("assets/image/icon_title.png", property.name!),
+              _getInfoRow("assets/image/icon_title.png", property.companyName ?? "N/A"),
               SizedBox(height: 5,),
               // _getInfoRow("assets/image/icon_city.png", property.city!),
               // _getInfoRow("assets/image/icon_address.png", property.address!),
@@ -65,7 +73,7 @@ class PropertyListItem extends StatelessWidget {
     );
   }
 
-  Widget getImageListItem(BuildContext context,String img){
+  Widget getImageListItem(BuildContext context,String img, String keyword, double price){
 
    return Container(
       // height: 90,
@@ -79,14 +87,14 @@ class PropertyListItem extends StatelessWidget {
             width: MediaQuery.of(context).size.width / 6 - 8.8,
             height: 70,
             fit: BoxFit.cover,
-            imageUrl: "https://media.istockphoto.com/photos/dream-home-luxury-house-success-suburban-house-picture-id1281554848?b=1&k=20&m=1281554848&s=170667a&w=0&h=s7X81b-3hfEGTYVkFKDOG7ZDySs57Tpw_WAETXi5xnQ=",
+            imageUrl: img,
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 CircularProgressIndicator(value: downloadProgress.progress),
             errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
           ),
-          Text("Word"),
+          Text(keyword!),
           Divider(),
-          Text("\$55")
+          Text("\$ $price")
         ],
       ),
     );

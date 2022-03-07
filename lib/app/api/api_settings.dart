@@ -1,29 +1,28 @@
+import 'package:perfect/app/models/about_company.dart';
+
 class ApiSettings{
-  static const BASE_URL_STORAGE = "https://smart-store.mr-dev.tech/storage/";
-  static const CATEGORIES = "categories/";
-  static const PRODUCTS = "products/";
-  static const SUB_CATEGORIES = "sub_categories/";
-  static const BASE_URL_API = "https://smart-store.mr-dev.tech/api/";
-  static const API_KEY_STORE = "aceb21cf-b732-426e-8948-2e1de63c0b64";
-  static const INDEX_CITIES = BASE_URL_API + "cities";
-  static const REGISTER_USER = BASE_URL_API + "auth/register";
-  static const ACTIVE_ACCOUNT_USER = BASE_URL_API + "auth/activate";
-  static const LOGIN_USER = BASE_URL_API + "auth/login";
-  static const FORGET_PASSWORD = BASE_URL_API + "auth/forget-password";
-  static const RESET_PASSWORD = BASE_URL_API + "auth/reset-password";
-  static const LOGOUT_USER = BASE_URL_API + "auth/logout";
-  static const CATEGORIES_INDEX = BASE_URL_API + "categories";
-  static const HOME = BASE_URL_API + "home";
-  static const PRODUCTS_INDEX = BASE_URL_API +  "sub-categories/";
-  static const PRODUCTS_DETAILS = BASE_URL_API +  "products/";
-  static const PRODUCTS_RATE_POST = BASE_URL_API +  "products/rate";
-  static const PRODUCTS_FAVORITE = BASE_URL_API +  "favorite-products";
-  static const ADDRESSES = BASE_URL_API +  "addresses";
-  static const PAYMENTS_CARDS = BASE_URL_API +  "payment-cards";
-  static const CHANGE_PASSWORD = BASE_URL_API +  "auth/change-password";
-  static const UPDATE_PROFILE = BASE_URL_API +  "auth/update-profile";
-  static const ORDERS = BASE_URL_API +  "orders";
-  static const REFRESH_TOKEN = BASE_URL_API +  "auth/refresh-fcm-token";
+  static const BASE_URL_API = "https://look4us.online/api/";
+  static const REGISTER_USER = BASE_URL_API + "register";
+  static const LOGIN_USER = BASE_URL_API + "login";
+  static const SENDOTP = BASE_URL_API + "sendotp";
+  static const RESETPASSWORD = BASE_URL_API + "resetpassword";
+  static const LOGOUT_USER = BASE_URL_API + "logout";
+  static const HOMEIMAGE = BASE_URL_API + "static?field=home_image";
+  static const ABOUTCOMPANY = BASE_URL_API + "static?field=about_company";
+  static const PROPERTYTYPE = BASE_URL_API + "static?field=property_types";
+  static const HouseTypes = BASE_URL_API + "static?field=house_types";
+  static const EXTRASCREEN = BASE_URL_API + "static?field=extra_screen";
+  static const HOWTOEDITPROFILE = BASE_URL_API + "static?field=guide_videos";
+  static const PRIVACYPOLICY = BASE_URL_API + "static?field=privacy_policy";
+  static const TERMSOFUSE = BASE_URL_API + "static?field=terms_of_use";
+  static const SEARCH = BASE_URL_API + "search";
+  static const COMPANYDETAILS = BASE_URL_API + "company/detail?company_id=";
+  static const SAVECOMPANYPROFILE = BASE_URL_API + "company/save";
+  static const CONTACT = BASE_URL_API + "contact";
+  static const RECOMMENDTOFRIEND = BASE_URL_API + "recommend";
+  static const REPORTCOMPANY = BASE_URL_API + "company/report";
+  static const FAVOURATE = BASE_URL_API + "company/favorite";
+  static const GETFAVOURATE = BASE_URL_API + "favorites";
 
 
 

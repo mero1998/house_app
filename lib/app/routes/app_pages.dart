@@ -1,9 +1,18 @@
 import 'package:get/get.dart';
+import 'package:perfect/app/modules/extra_page/exstra_screen_binding.dart';
+import 'package:perfect/app/modules/extra_page/extra_page_view.dart';
+import 'package:perfect/app/modules/filters/views/select_house_type.dart';
+import 'package:perfect/app/modules/filters/views/select_keyword.dart';
 import 'package:perfect/app/modules/filters/views/select_property_type.dart';
+import 'package:perfect/app/modules/forgot_password/views/reset_password.dart';
+import 'package:perfect/app/modules/privacy_policy/bindings/privacy_policy_binding.dart';
+import 'package:perfect/app/modules/privacy_policy/views/privacy_policy_view.dart';
 import 'package:perfect/app/modules/recommend_to_frind/bindings/recommend_to_friend_binding.dart';
 import 'package:perfect/app/modules/recommend_to_frind/views/recommend_to_friend_view.dart';
 import 'package:perfect/app/modules/subscription/bindings/subsciption_binding.dart';
 import 'package:perfect/app/modules/subscription/views/subsciption_view.dart';
+import 'package:perfect/app/modules/terms_of_use/bindings/terms_of_use_binding.dart';
+import 'package:perfect/app/modules/terms_of_use/views/terms_of_use_view.dart';
 
 import '../modules/contact_us/bindings/contact_us_binding.dart';
 import '../modules/contact_us/views/contact_us_view.dart';
@@ -43,7 +52,7 @@ class AppPages {
     GetPage(
       name: _Paths.HOME,
       page: () => HomeView(),
-      binding: HomeBinding(),
+      // binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.SPLASH,
@@ -66,6 +75,11 @@ class AppPages {
       binding: ForgotPasswordBinding(),
     ),
     GetPage(
+      name: _Paths.EXTRAPAGE,
+      page: () => ExtraPage(),
+      binding: ExtraPageBinding(),
+    ),
+    GetPage(
       name: _Paths.CONTACT_US,
       page: () => ContactUsView(),
       binding: ContactUsBinding(),
@@ -85,21 +99,21 @@ class AppPages {
       page: () => FilterresultsView(),
       binding: FilterresultsBinding(),
     ),
+    // GetPage(
+    //   name: _Paths.MAP,
+    //   page: () => MapView(),
+    //   binding: MapBinding(),
+    // ),
     GetPage(
-      name: _Paths.MAP,
-      page: () => MapView(),
-      binding: MapBinding(),
+      name: _Paths.RESETPASSWORD,
+      page: () => ResetPassword(),
+      binding: ForgotPasswordBinding(),
     ),
-    GetPage(
-      name: _Paths.PROPERTYDETAILS,
-      page: () => PropertydetailsView(),
-      binding: PropertydetailsBinding(),
-    ),
-    GetPage(
-      name: _Paths.EDITPROFILE,
-      page: () => EditprofileView(),
-      binding: EditprofileBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.EDITPROFILE,
+    //   page: () => EditprofileView(),
+    //   binding: EditprofileBinding(),
+    // ),
     GetPage(
       name: _Paths.SUBSCIPTION,
       page: () => SubsciptionView(),
@@ -110,9 +124,19 @@ class AppPages {
       page: () => HalpView(),
       binding: HalpBinding(),
     ),
+    // GetPage(
+    //   name: _Paths.SELECT_PROPERTY_TYEP,
+    //   page: () => SelectPropertyType(),
+    //   // binding: HalpBinding(),
+    // ),
+    // GetPage(
+    //   name: _Paths.SELECT_HOUSE_TYEP,
+    //   page: () => SelectHouseType(),
+    //   // binding: HalpBinding(),
+    // ),
     GetPage(
-      name: _Paths.SELECT_PROPERTY_TYEP,
-      page: () => SelectPropertyType(),
+      name: _Paths.SELECT_KEYWORD,
+      page: () => SelectKeyword(),
       // binding: HalpBinding(),
     ),
     GetPage(
@@ -120,5 +144,20 @@ class AppPages {
       page: () => RecommendToFriendView(),
       binding: RecommendToFriendBinding(),
     ),
+    GetPage(
+      name: _Paths.PRIVACYPOLICY,
+      page: () => PrivacyPolicyView(),
+      binding: PrivacyPolicyBinding(),
+    ),
+    GetPage(
+      name: _Paths.TERMSOFUSE,
+      page: () => TermsOfUseView(),
+      binding: TermsOfUseBinding(),
+    ),
+    // GetPage(
+    //   name: _Paths.PROPERTYDETAILS,
+    //   page: () => PropertydetailsView(),
+    //   binding: PropertydetailsBinding(),
+    // ),
   ];
 }

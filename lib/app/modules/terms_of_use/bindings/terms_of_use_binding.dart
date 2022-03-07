@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:perfect/app/modules/privacy_policy/controller/privacy_policy_controller.dart';
+import 'package:perfect/app/modules/terms_of_use/controller/terms_of_use_controller.dart';
 
 
-class PrivacyPolicyBinding extends Bindings {
+class TermsOfUseBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<PrivacyPolicyController>(
-          () => PrivacyPolicyController(),
+    Get.lazyPut<TermsOfUseController>(
+          () => TermsOfUseController(),
     );
   }
 }

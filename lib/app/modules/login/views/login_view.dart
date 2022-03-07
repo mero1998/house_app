@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/models/user.dart';
 import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/preferences/user_preferences.dart';
 
 import '../controllers/login_controller.dart';
 
@@ -100,15 +102,26 @@ class LoginView extends GetView<LoginController> {
   }
 
   Widget _buildLoginButton(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: OutlinedButton(
-        style: raisedButtonStyle,
-        onPressed: () {
-          controller.checkLoginForm();
-        },
-        child: Text('Sign In'),
-      ),
+    return GetX<LoginController>(
+      builder: (val) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          child: OutlinedButton(
+            style: raisedButtonStyle,
+            onPressed: () async {
+              if(controller.checkLoginForm()){
+                User? user = await  controller.doLogin();
+                if(user != null){
+                  UserPreferences().save(user!);
+                }
+              }
+
+
+            },
+            child: val.click.value ? SizedBox(height: 12,width: 12,child: CircularProgressIndicator(color: Colors.white,))  : Text('Sign In'),
+          ),
+        );
+      },
     );
   }
 

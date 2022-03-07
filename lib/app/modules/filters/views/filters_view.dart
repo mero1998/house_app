@@ -1,19 +1,27 @@
+import 'dart:convert';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:perfect/app/data/address_search.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/data/place_service.dart';
 import 'package:perfect/app/modules/contact_us/views/contact_us_view.dart';
+import 'package:perfect/app/modules/filterresults/controllers/filterresults_controller.dart';
 import 'package:perfect/app/modules/filters/views/select_house_type.dart';
 import 'package:perfect/app/modules/filters/views/select_keyword.dart';
 import 'package:perfect/app/modules/filters/views/select_property_type.dart';
+import 'package:perfect/app/modules/propertydetails/views/propertydetails_view.dart';
 import 'package:perfect/app/modules/recommend_to_frind/views/recommend_to_friend_view.dart';
 import 'package:perfect/app/routes/app_pages.dart';
 import 'package:perfect/app/utils/drop_down_multilanguage.dart';
-
+import 'package:perfect/preferences/user_preferences.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart';
 import '../controllers/filters_controller.dart';
-
 class FiltersView extends StatefulWidget {
   @override
   State<FiltersView> createState() => _FiltersViewState();
@@ -29,38 +37,49 @@ class _FiltersViewState extends State<FiltersView> {
   final _distanceKey = GlobalKey<DropdownSearchState<String>>();
 
   final _selectKeywordKey = GlobalKey<DropdownSearchState<String>>();
+  TextEditingController searchController = TextEditingController();
 
- final List<Widget> radiusList = [
-    Text('within 20 miles'),
-    Text('within 30 miles'),
-    Text('within 40 miles'),
-    Text('within 50 miles'),
-    Text('within 60 miles'),
-    Text('within 70 miles'),
-    Text('within 80 miles'),
+String? longitude;
+double? latitude;
+ final List<String> radiusList = [
+   //  'within 20 miles',
+   // 'within 30 miles',
+   //  'within 40 miles',
+   //  'within 50 miles',
+   //  'within 60 miles',
+   //  'within 70 miles',
+   // 'within 80 miles',
+   '20',
+   '30',
+   '40',
+   '50',
+   '60',
   ];
-  int radius  =0;
+  String selectItem = "";
+ Widget selectedRadius = Text("");
+  int radius  = 0;
 
  late FixedExtentScrollController firstController;
 
+  String _streetNumber = '';
+  String _street = '';
+  String _city = '';
+  String _zipCode = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Get.put(FiltersController());
+    Get.put(FilterresultsController());
     firstController = FixedExtentScrollController(initialItem: 0);
 
   }
 
-  void _pickerHandler() {
-    setState(
-          () => radius = (firstController.selectedItem)
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title:  Text(
@@ -116,10 +135,13 @@ class _FiltersViewState extends State<FiltersView> {
                       },),
                       PopupMenuDivider(),
                       PopupMenuItem(
+                              enabled: UserPreferences().type == "company",
                           child: GestureDetector(
-                            child: Text('Add Profile'),
+                            child: Text('My Profile'),
                             onTap: () {
-                              Get.toNamed('/editprofile');
+                              // Get.toNamed('/editprofile');
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => PropertydetailsView(companyId: UserPreferences().id),));
+
                             },
                           )),
                       PopupMenuDivider(),
@@ -130,9 +152,13 @@ class _FiltersViewState extends State<FiltersView> {
                       },),
                       PopupMenuDivider(),
 
-                      PopupMenuItem(child: Text('Terms of use')),
+                      PopupMenuItem(child: GestureDetector(
+                          onTap: () => Get.toNamed(Routes.TERMSOFUSE),
+                          child: Text('Terms of use'))),
                       PopupMenuDivider(),
-                      PopupMenuItem(child: Text('Privacy Policy')),
+                      PopupMenuItem(child: GestureDetector(
+                          onTap: () => Get.toNamed(Routes.PRIVACYPOLICY),
+                          child: Text('Privacy Policy'))),
                       PopupMenuItem(
                           child: InkWell(
                             child: Text('How to work'),
@@ -168,6 +194,7 @@ class _FiltersViewState extends State<FiltersView> {
                             color: Color(0XFFE7E7E7),
                             border: Border.all(color: Colors.white10)),
                         child: TextField(
+                          controller: searchController,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white60),
@@ -189,9 +216,50 @@ class _FiltersViewState extends State<FiltersView> {
                               ),
                             ),
                           ),
+                        onTap:() async{
+                          final sessionToken = Uuid().v4();
+                          final Suggestion? result = await showSearch(
+                              context: context,
+                              delegate: AddressSearch(sessionToken));
+                          print("RESULT ::: ${result!.placeId}");
+                          print("DESCRIPTION :::: ${result.description}");
+
+                          if (result != null) {
+                            var locations = await locationFromAddress(result.description);
+                             FiltersController.to.address.value = result.description;
+                            setState(() {
+                              searchController.text = result.description;
+                              longitude = locations.first.longitude.toString();
+                              latitude = locations.first.latitude;
+                              //   _streetNumber = placeDetails.streetNumber;
+                              //   _street = placeDetails.street;
+                              //   _city = placeDetails.city;
+                              //   _zipCode = placeDetails.zipCode;
+                            });
+
+                            print("Length::: ${locations.length}");
+                            print(locations.first.latitude);
+                            print(locations.first.longitude);
+
+                            // final placeDetails = await PlaceApiProvider(sessionToken)
+                            //     .getPlaceDetailFromId(result.placeId);
+                            // print(placeDetails!.results!.first.geometry!.location!.lat);
+
+                          }
+                          },
                         ),
                       ),
-                    )
+                    ),
+                    // ListView.builder(
+                    //   physics: NeverScrollableScrollPhysics(),
+                    //   shrinkWrap: true,
+                    //   itemCount: _placeList.length,
+                    //   itemBuilder: (context, index) {
+                    //     return ListTile(
+                    //       title: Text(_placeList[index]["description"]),
+                    //     );
+                    //   },
+                    // )
                   ],
                 ),
                 SizedBox(
@@ -209,7 +277,8 @@ class _FiltersViewState extends State<FiltersView> {
                     children: [
                       InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPropertyType(),));
+                          // Get.toNamed(Routes.SELECT_PROPERTY_TYEP);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPropertyType(isFilter: true,),));
                         },
                         child: Text(
                           "Select Property Type",
@@ -224,7 +293,10 @@ class _FiltersViewState extends State<FiltersView> {
                           builder: (controller) {
                             return controller.selectedProperty.length == 0 ? Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Select...",style: TextStyle(color: Colors.black),),
+                              child: InkWell(onTap: (){
+                                // Get.toNamed(Routes.SELECT_PROPERTY_TYEP);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPropertyType(isFilter: true,),));
+                              }, child: Text("Select...",style: TextStyle(color: Colors.black),)),
                             ) : ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
@@ -241,7 +313,7 @@ class _FiltersViewState extends State<FiltersView> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                       controller.selectedProperty[index] ,
+                                       controller.selectedProperty[index].name! ,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: 12),
                                     ),
@@ -283,9 +355,9 @@ class _FiltersViewState extends State<FiltersView> {
                         height: 15,
                       ),
                       InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectHouseType(),));
-
+                        onTap: (){
+                          // Get.toNamed(Routes.SELECT_HOUSE_TYEP);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectHouseType(isFilter: true),));
                         },
                         child: Text(
                           "Select House Type",
@@ -302,7 +374,10 @@ class _FiltersViewState extends State<FiltersView> {
                           builder: (controller) {
                             return controller.selectedHouseType.length == 0 ? Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Select...",style: TextStyle(color: Colors.black),),
+                              child: InkWell(onTap: (){
+                                // Get.toNamed(Routes.SELECT_HOUSE_TYEP);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SelectHouseType(isFilter: true,),));
+                              },child: Text("Select...",style: TextStyle(color: Colors.black),)),
                             ) : ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
@@ -319,7 +394,7 @@ class _FiltersViewState extends State<FiltersView> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        controller.selectedHouseType[index],
+                                        controller.selectedHouseType[index].name!,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(fontSize: 12),
                                       ),
@@ -380,7 +455,9 @@ class _FiltersViewState extends State<FiltersView> {
                         visible: radius != 0,
                         replacement: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Select...",style: TextStyle(color: Colors.black),),
+                          child: InkWell(onTap: (){
+                            _showPicker(context);
+                          },child: Text("Select...",style: TextStyle(color: Colors.black),)),
                         ) ,
                         child: Container(
                           padding: EdgeInsets.only(left: 6, bottom: 3, top: 3, right: 0),
@@ -391,32 +468,33 @@ class _FiltersViewState extends State<FiltersView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+
                               Text(
-                                radius.toString() +  "Miles",
+                                "Within $selectItem Miles",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 12),
                               ),
-                              // Container(
-                              //   height: 25,
-                              //   child: ButtonTheme(
-                              //     minWidth: 0,
-                              //     child: MaterialButton(
-                              //       shape: const CircleBorder(),
-                              //       focusColor: Colors.red[200],
-                              //       hoverColor: Colors.red[200],
-                              //       padding: EdgeInsets.all(0),
-                              //       onPressed: () {
-                              //         // controller.removeKeyword(index: index, keyword: controller.selectedKeyword[index]);
-                              //         // _bhkKey.currentState?.removeItem(i);
-                              //       },
-                              //       child: Icon(
-                              //         Icons.close_outlined,
-                              //         color: Colors.grey,
-                              //         size: 14,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // )
+                              Container(
+                                height: 25,
+                                child: ButtonTheme(
+                                  minWidth: 0,
+                                  child: MaterialButton(
+                                    shape: const CircleBorder(),
+                                    focusColor: Colors.red[200],
+                                    hoverColor: Colors.red[200],
+                                    padding: EdgeInsets.all(0),
+                                    onPressed: () {
+                                      // controller.removeKeyword(index: index, keyword: controller.selectedKeyword[index]);
+                                      // _bhkKey.currentState?.removeItem(i);
+                                    },
+                                    child: Icon(
+                                      Icons.close_outlined,
+                                      color: Colors.grey,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -430,9 +508,8 @@ class _FiltersViewState extends State<FiltersView> {
                       ),
                       SizedBox(height: 15),
                       InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectKeyword(),));
-
+                        onTap: (){
+                          Get.toNamed(Routes.SELECT_KEYWORD);
                         },
                         child: Text("Select Keyword",
                             style: TextStyle(
@@ -445,7 +522,10 @@ class _FiltersViewState extends State<FiltersView> {
                           builder: (controller) {
                             return controller.selectedKeyword.length == 0 ? Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text("Select...",style: TextStyle(color: Colors.black),),
+                              child: InkWell(onTap: (){
+                                Get.toNamed(Routes.SELECT_KEYWORD);
+                                // Navigator.push(context, MaterialPageRoute(builder: (context) => SelectPropertyType(),));
+                              },child: Text("Select...",style: TextStyle(color: Colors.black),)),
                             ) : ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
@@ -606,11 +686,11 @@ class _FiltersViewState extends State<FiltersView> {
   void _showPicker(BuildContext ctx) {
     showModalBottomSheet(
         context: ctx,
-        
         builder: (context) {
           return SizedBox(
             height: 250,
             child: CupertinoActionSheet(
+
                title:  Stack(
                  children: [
                    Center(child: Text("Radius", textAlign: TextAlign.center,)),
@@ -637,9 +717,15 @@ class _FiltersViewState extends State<FiltersView> {
                             backgroundColor: Colors.white,
                             itemExtent: 40,
                             scrollController: firstController,
-                            children: radiusList,
-                            onSelectedItemChanged: (value) {
-                              _pickerHandler();
+                            children: radiusList.map((item)=> Center(
+                              child: Text("Within $item Miles",
+                                style: TextStyle(fontSize: 32),),
+                            )).toList(),
+                            onSelectedItemChanged: (index) {
+                              // _pickerHandler();
+                              setState(() => this.radius= index);
+                              selectItem= radiusList[index];
+                              FiltersController.to.radius.value = radius;
                             },
 
                           ),
@@ -986,15 +1072,56 @@ class _FiltersViewState extends State<FiltersView> {
   }
 
   Widget _buildSearchButton(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: OutlinedButton(
-        style: raisedButtonStyle,
-        onPressed: () {
-          Get.toNamed(Routes.FILTERRESULTS);
-        },
-        child: Text('Enter'),
-      ),
+    List<String> prop = [];
+
+    // List<String> myList = ["1", "2", "#3", "*4", "+5"];
+    List<String>  propTypes =  FiltersController.to.selectedPropertyTypesIds;
+    if(propTypes.length == 0){
+      propTypes.add("-1");
+    }
+    String propTypesSelected = propTypes.reduce((value, element) {
+      return value + "," + element;
+    });
+    List<String>  houseTypes =  FiltersController.to.selectedHouseTypesIds;
+    if(houseTypes.length == 0){
+      houseTypes.add("-1");
+    }
+    String houseTypesSelected = houseTypes.reduce((value, element) {
+      return value + "," + element;
+    });
+    // # output: "12#3*4+5"
+
+
+
+    return GetX<FilterresultsController>(
+      builder: (controller) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          child: OutlinedButton(
+            style: raisedButtonStyle,
+            onPressed: () {
+              FilterresultsController.to.getPropertyList(
+                // propertyType: FiltersController.to.selectedPropertyTypesIds.length != 0
+                //     ? FiltersController.to.selectedPropertyTypesIds : "-1",
+                  propertyType: propTypesSelected,
+                  houseType: houseTypesSelected,
+                  // houseType: FiltersController.to.selectedHouseTypesIds.length != 0
+                  //     ? FiltersController.to.selectedHouseTypesIds.toString() : "-1",
+                  radius: radius,
+                  address: searchController.text,
+                  latitude: latitude!,
+                  // latitude: 47.2365159,
+                  // longitude: double.parse(longitude!.substring(0,11)),
+                  longitude: double.parse(longitude!),
+                  keyword: "");
+
+              print(longitude!.substring(0,9));
+              Get.toNamed(Routes.FILTERRESULTS);
+            },
+            child: controller.click.value ? SizedBox(height: 12,width: 12,child: CircularProgressIndicator(color: Colors.white,))  :  Text('Enter'),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:perfect/app/modules/extra_page/extra_screen_controller.dart';
 
 
 class ExtraPage extends StatelessWidget {
@@ -15,44 +17,40 @@ class ExtraPage extends StatelessWidget {
       ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: 70),
-        child: ListView(
-          children: [
-            ListView.builder(
-              itemCount: 3,
-              physics: ScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                  return  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 5,
+      body: GetX(
+       builder: (ExtraScreenController controller) {
+         return Padding(
+           padding: EdgeInsets.only(top: 70, left: 15, right: 15, bottom: 20),
+           child: controller.extraScreenList.length== 0 ? Center(child: CircularProgressIndicator(),) : ListView(
+             children: [
+               Container(
+                 width: MediaQuery.of(context).size.width,
+                 height: MediaQuery.of(context).size.height / 5,
 
-                    child: CachedNetworkImage(
-                      imageUrl: "http://via.placeholder.com/350x150",
-                      progressIndicatorBuilder: (context, url, downloadProgress) =>
-                          CircularProgressIndicator(value: downloadProgress.progress),
-                      errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
-                    ),
-                  );
-                },),
+                 child: CachedNetworkImage(
+                   imageUrl: controller.extraScreenList.first.image1 ?? "",
+                   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                       CircularProgressIndicator(value: downloadProgress.progress),
+                   errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
+                 ),
+               ),
+               Text(controller.extraScreenList.first.text1 ?? ""),
+               Container(
+                 width: MediaQuery.of(context).size.width,
+                 height: MediaQuery.of(context).size.height / 5,
 
-            Text("This Will be an affliate link to cridit card company"),
-            Text("Text with link external company of my choise"),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 5,
-
-              child: CachedNetworkImage(
-                imageUrl: "http://via.placeholder.com/350x150",
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    CircularProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
-              ),
-            ),
-            Text("Editable text with link paypal or stripe"),
-          ],
-        ),
+                 child: CachedNetworkImage(
+                   imageUrl: controller.extraScreenList.first.image2 ?? "",
+                   progressIndicatorBuilder: (context, url, downloadProgress) =>
+                       CircularProgressIndicator(value: downloadProgress.progress,),
+                   errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
+                 ),
+               ),
+               Text(controller.extraScreenList.first.text2 ?? ""),
+             ],
+           ),
+         );
+       },
       ),
     );
   }

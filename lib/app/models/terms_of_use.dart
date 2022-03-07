@@ -1,11 +1,11 @@
 
 import 'package:perfect/app/utils/helper.dart';
 
-class PrivacyPolicy {
+class TermsOfUse {
   String? text;
 
 
-  PrivacyPolicy.fromJson(Map<String, dynamic> json) {
+  TermsOfUse.fromJson(Map<String, dynamic> json) {
 
     text =  Helper.parseHtmlString(json['text']);
 

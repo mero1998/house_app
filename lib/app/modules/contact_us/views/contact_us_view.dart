@@ -82,8 +82,8 @@ class ContactUsView extends GetView<ContactUsController> {
   Widget _buildFullContactRow() {
     return TextFormField(
       keyboardType: TextInputType.multiline,
-      minLines: 1,
-      maxLines: 5,
+      minLines: 5,
+      maxLines: 10,
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
@@ -102,7 +102,7 @@ class ContactUsView extends GetView<ContactUsController> {
         prefixIcon: Padding(
           padding: EdgeInsets.only(top: 15), // add padding to adjust icon
           child: Icon(
-            Icons.person,
+            Icons.text_snippet,
             color: mainColor,
           ),
         ),
@@ -124,7 +124,7 @@ class ContactUsView extends GetView<ContactUsController> {
         onPressed: () {
           controller.checkRegisterForm();
         },
-        child: Text('Contact US'),
+        child: Text('Contact Us'),
       ),
     );
   }
@@ -134,7 +134,7 @@ class ContactUsView extends GetView<ContactUsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ContactUsView'),
+        title: Text('Contact Us'),
         centerTitle: true,
       ),
       body: Container(

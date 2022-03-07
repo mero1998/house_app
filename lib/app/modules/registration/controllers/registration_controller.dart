@@ -1,5 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:perfect/app/api/api_settings.dart';
+import 'package:http/http.dart' as http;
+import 'package:perfect/app/models/user.dart';
+import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/preferences/user_preferences.dart';
 
 class RegistrationController extends GetxController {
 
@@ -8,7 +16,7 @@ class RegistrationController extends GetxController {
   GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
 
   late TextEditingController emailController, passwordController, nameController;
-
+  RxBool click = false.obs;
   var email = '';
   var password = '';
   var name = '';
@@ -59,19 +67,45 @@ class RegistrationController extends GetxController {
     return null;
   }
 
-  void checkRegisterForm() {
+  bool checkRegisterForm(){
     final isValid = registerFormKey.currentState!.validate();
     if (!isValid) {
-      return;
+      return false;
+    }else{
+      registerFormKey.currentState!.save();
+
+      return true;
     }
-    registerFormKey.currentState!.save();
-    doRegister();
-  }
-
-  void doRegister() {
 
   }
 
+  Future<User?> doRegister() async{
 
+    click.value = true;
+    var url = Uri.parse(ApiSettings.REGISTER_USER);
+
+    var response = await http.post(url, body: {
+      "name": nameController.text,
+      "password": passwordController.text,
+      "email" : emailController.text,
+      "type": jobType.value == 0 ? "guest" : "company",
+    });
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      var jsonResponse  = jsonDecode(response.body)['data'];
+
+      print(response.statusCode);
+      Get.snackbar("Success", "Registered Successful",backgroundColor: Colors.green);
+    Get.offAndToNamed(Routes.HOME);
+    UserPreferences().save(User.fromJson(jsonResponse));
+      click.value = false;
+
+      return User.fromJson(jsonResponse);
+    }
+    Get.snackbar("Filed", "Registered Filed",backgroundColor: Colors.red);
+    click.value = false;
+
+    return null;
+  }
 
 }

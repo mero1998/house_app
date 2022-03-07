@@ -19,7 +19,13 @@ abstract class Routes {
   static const SUBSCIPTION = _Paths.SUBSCIPTION;
   static const HALP = _Paths.HALP;
   static const SELECT_PROPERTY_TYEP = _Paths.SELECT_PROPERTY_TYEP;
+  static const SELECT_HOUSE_TYEP = _Paths.SELECT_HOUSE_TYEP;
+  static const SELECT_KEYWORD = _Paths.SELECT_KEYWORD;
   static const RECOMMENDTOFRIEND = _Paths.RECOMMENDTOFRIEND;
+  static const RESETPASSWORD = _Paths.RESETPASSWORD;
+  static const EXTRAPAGE = _Paths.EXTRAPAGE;
+  static const PRIVACYPOLICY = _Paths.PRIVACYPOLICY;
+  static const TERMSOFUSE = _Paths.TERMSOFUSE;
 }
 
 abstract class _Paths {
@@ -40,5 +46,11 @@ abstract class _Paths {
   static const SUBSCIPTION = '/subsciption';
   static const HALP = '/halp';
   static const SELECT_PROPERTY_TYEP = "/select_property_type";
+  static const SELECT_HOUSE_TYEP = "/select_house_type";
+  static const SELECT_KEYWORD = "/select_keyword";
   static const RECOMMENDTOFRIEND = "/recommend-to-friend";
+  static const RESETPASSWORD = "/reset_password";
+  static const EXTRAPAGE = "/extra_page";
+  static const PRIVACYPOLICY = "/pivacy_policy";
+  static const TERMSOFUSE = "/terms_of_use";
 }

@@ -1,18 +1,70 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/models/search_result.dart';
+import 'package:perfect/app/modules/filterresults/controllers/filterresults_controller.dart';
 import 'package:perfect/app/modules/filterresults/views/filterresults_view.dart';
+import 'package:perfect/app/modules/filters/controllers/filters_controller.dart';
 import 'package:perfect/app/modules/search/views/search_view.dart';
 import 'package:perfect/app/routes/app_pages.dart';
 import 'package:perfect/app/utils/drop_down_multilanguage.dart';
 
 import '../controllers/map_controller.dart';
 
-class MapView extends GetView<MapController> {
+class MapView extends StatefulWidget {
+
+  List<FilterResult?> filterSearch;
+
+  MapView({required this.filterSearch});
+
   @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  Set<Marker> allMarkers = <Marker>{};
+
+  Completer<GoogleMapController> _controller = Completer();
+
+ late CameraPosition? myLocation;
+  int filterResultIndex = -1;
+ int companyId = -1;
+
+ @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      companyId = widget.filterSearch.first!.companyId!;
+    });
+    myLocation = CameraPosition
+      (target: LatLng(widget.filterSearch.first!.companyLatitude!.toDouble() , widget.filterSearch.first!.companyLongitude!.toDouble()));
+  for(int i = 0; i < widget.filterSearch.length; i++){
+    allMarkers.add(
+      Marker(markerId: MarkerId(widget.filterSearch[i]!.companyId.toString()),
+      onTap: () {
+        setState(() {
+          companyId = widget.filterSearch.first!.companyId!;
+          if(widget.filterSearch[i]!.companyId != null){
+            companyId = widget.filterSearch[i]!.companyId!;
+          }
+        });
+      },
+      position: LatLng(widget.filterSearch.first!.companyLatitude!.toDouble() , widget.filterSearch.first!.companyLongitude!.toDouble())
+      ),
+    );
+  }
+
+ }
+ @override
   Widget build(BuildContext context) {
+
+print(companyId);
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -61,29 +113,46 @@ class MapView extends GetView<MapController> {
         child: Column(
           children: [
             Container(
-              height: size.height / 14,
+              height: size.height / 7,
               width: size.width / 1,
               decoration: BoxDecoration(color: Colors.black54),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Newcastle Upon Tyne",
-                      style: TextStyle(color: Colors.white, fontSize: 15),
+                      "Address : ${FiltersController.to.address}",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      "Selected property type : ${FiltersController.to.selectedProperty.map((element) => element.name)}",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      "Selected house type :  ${FiltersController.to.selectedHouseType.map((element) => element.name)}",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 2,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Up To \$12,000,Atleast 3 Bedooms",
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                          "radius : ${FiltersController.to.radius}",
+                          style: TextStyle(color: Colors.white, fontSize: 12),
                         ),
                         Text(
-                          "40 Results",
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+                          "${FilterresultsController.to.propertiesFilter!.length} Results",
+                          style: TextStyle(color: Colors.white, fontSize: 13),
                         )
                       ],
                     )
@@ -146,23 +215,40 @@ class MapView extends GetView<MapController> {
             // ),
             Container(
               height: MediaQuery.of(context).size.height/1.8,
-              child: Stack(
-
-                children: [
-                  // Text("Missions High School",style: TextStyle(color: Colors.black),),
-                  Image.asset(
-                    "assets/image/map_image.png",
-                    fit: BoxFit.fill,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height/1.8,
-                  ),
-                  Center(
-                    child: Image.asset(
-                      "assets/image/icon_map_pin.png",
-                      width: 35,
-                    ),
-                  )
-                ],
+              child: GoogleMap(
+                myLocationEnabled: true,
+                // mapType: MapType.satellite,
+                markers: allMarkers,
+                // polylines: {
+                //   if (_info != null)
+                //     Polyline(
+                //       polylineId: const PolylineId('overview_polyline'),
+                //       color: const Color(0xFF027A8A),
+                //       width: 5,
+                //       points: _info!.polylinePoints
+                //           .map((e) => LatLng(e.latitude, e.longitude))
+                //           .toList(),
+                //     ),
+                // },
+                // onTap: (argument) {
+                //   changeMarkerTap(argument.latitude, argument.longitude);
+                // },
+                onCameraMove: (position) {
+                  // Logger().d(position.target.longitude);
+                  // appControler.latMap.value = position.target.latitude;
+                  // appControler.longMap.value = position.target.longitude;
+                  // appControler.loadAddress.value = true;
+                },
+                onCameraIdle: () async {
+                  // await LocationHelper().getPlaceName(
+                  //     appControler.latMap.value,
+                  //     appControler.longMap.value);
+                  // appControler.loadAddress.value = false;
+                },
+                initialCameraPosition: myLocation!,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
               ),
             ),
 
@@ -256,7 +342,8 @@ class MapView extends GetView<MapController> {
             SizedBox(
               height: 130,
               child: ListView.builder(
-                  itemCount: 10,
+                itemCount: widget.filterSearch.firstWhere((element) => element!.companyId == companyId)!.companyImages!.length,
+                  // itemCount: widget.filterSearch.firstWhere((element) => element.companyId == companyId).companyImages!.length,
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
                   physics: ScrollPhysics(),
@@ -273,14 +360,15 @@ class MapView extends GetView<MapController> {
                             width: MediaQuery.of(context).size.width / 5 - 10,
                             height: 70,
                             fit: BoxFit.cover,
-                            imageUrl: "https://media.istockphoto.com/photos/dream-home-luxury-house-success-suburban-house-picture-id1281554848?b=1&k=20&m=1281554848&s=170667a&w=0&h=s7X81b-3hfEGTYVkFKDOG7ZDySs57Tpw_WAETXi5xnQ=",
+                            // imageUrl: widget.filterSearch.firstWhere((element) => element.data.filterResult.ficompanyId == companyId).companyImages![index].imageUrl ?? "",
+                           imageUrl: "",
                             progressIndicatorBuilder: (context, url, downloadProgress) =>
                                 CircularProgressIndicator(value: downloadProgress.progress),
                             errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
                           ),
-                          Text("Word"),
+                          Text(widget.filterSearch.firstWhere((element) => element!.companyId == companyId)!.companyImages![index].keyword ?? "N/A"),
                           Divider(),
-                          Text("\$55")
+                          Text("\$ ${widget.filterSearch.firstWhere((element) => element!.companyId == companyId)!.companyImages![index].price ?? "N/A"}")
                         ],
                       ),
                     );
@@ -291,7 +379,7 @@ class MapView extends GetView<MapController> {
               child: Row(
                 children: [
                   Icon(Icons.location_city, color: mainColor,),
-                  Text("Company ABC", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
+                  Text(widget.filterSearch.firstWhere((element) => element!.companyId == companyId)!.companyName ?? "N/A", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
                 ],
               ),
             )

@@ -2,15 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:perfect/app/models/property.dart';
+import 'package:perfect/app/models/saved_property.dart';
 import 'package:perfect/app/models/search_result.dart';
 import 'package:perfect/app/modules/propertydetails/controllers/propertydetails_controller.dart';
 import 'package:perfect/app/modules/propertydetails/views/propertydetails_view.dart';
 import 'package:perfect/app/routes/app_pages.dart';
 
-class PropertyListItem extends StatelessWidget {
+class PropertyFavListItem extends StatelessWidget {
 
-  final FilterResult  property;
-  PropertyListItem({Key? key, required this.property}) : super(key: key);
+  final SavedProperty  property;
+  PropertyFavListItem({Key? key, required this.property}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class PropertyListItem extends StatelessWidget {
             children: [
               SizedBox(height: 5,),
               SizedBox(
-                height: 130.0,
+                height: 150.0,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount:
@@ -92,9 +93,9 @@ class PropertyListItem extends StatelessWidget {
                 CircularProgressIndicator(value: downloadProgress.progress),
             errorWidget: (context, url, error) => Icon(Icons.error, size: 60,),
           ),
-          Text("Word"),
+          Text(property.companyImages!.first.keyword ?? ""),
           Divider(),
-          Text("\$55")
+          Text("\$ ${property.companyImages!.first.price ?? 0}")
         ],
       ),
     );

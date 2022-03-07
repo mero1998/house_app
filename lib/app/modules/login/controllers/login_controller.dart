@@ -1,12 +1,24 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:perfect/app/api/api_settings.dart';
+import 'package:perfect/app/models/user.dart';
 import 'package:perfect/app/routes/app_pages.dart';
+import 'package:http/http.dart' as http;
+import 'package:perfect/preferences/user_preferences.dart';
 
 class LoginController extends GetxController {
+
+
+  static LoginController get to => Get.find();
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
   late TextEditingController emailController, passwordController, confirmController;
 
+  RxBool click = false.obs;
   var email = '';
   var password = '';
 
@@ -25,9 +37,9 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    confirmController.dispose();
+    // emailController.dispose();
+    // passwordController.dispose();
+    // confirmController.dispose();
   }
 
   String? validateEmail(String value) {
@@ -44,17 +56,69 @@ class LoginController extends GetxController {
     return null;
   }
 
-  void checkLoginForm() {
+  bool checkLoginForm() {
     final isValid = loginFormKey.currentState!.validate();
     if (!isValid) {
-      return;
+      return false;
+    }else{
+      loginFormKey.currentState!.save();
+      return true;
     }
-    loginFormKey.currentState!.save();
-    doLogin();
+
+    // saveToShared();
   }
 
-  void doLogin() {
-    Get.offAndToNamed(Routes.HOME);
+  Future<User?>  doLogin() async{
+    click.value = true;
+    var url = Uri.parse(ApiSettings.LOGIN_USER);
+    var response = await http.post(url, body: {
+      "email":  emailController.text,
+      "password" :  passwordController.text,
+    },
+    );
+    print(    click.value);
+    if(response.statusCode == 200){
+      var jsonResponse  = jsonDecode(response.body)['data'];
+      Get.snackbar("Success", "Login Success", backgroundColor: Colors.green);
+      Get.offAndToNamed(Routes.HOME);
+      // UserPreferences().save(User.fromJson(jsonResponse));
+      click.value = false;
+
+      return User.fromJson(jsonResponse);
+    }else{
+      Get.snackbar("Filed", "Login Filed", backgroundColor: Colors.red);
+      click.value = false;
+      return null;
+    }
+
   }
+
+
+  Future logout() async{
+
+    print("We are here");
+    var url  = Uri.parse(ApiSettings.LOGOUT_USER);
+    var response = await http.get(url , headers: {
+      HttpHeaders.authorizationHeader : UserPreferences().getToken(),
+    });
+    print(response.statusCode);
+    if(response.statusCode == 200){
+      UserPreferences().logout();
+      Get.offNamedUntil(Routes.LOGIN, (route) => false);
+      return true;
+    }
+    return false;
+
+  }
+
+  saveToShared() async{
+    User? user = await doLogin();
+    if(user != null){
+      UserPreferences().save(user!);
+    }
+
+  }
+
+
 
 }

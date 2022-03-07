@@ -1,6 +1,7 @@
 
 
 import 'package:perfect/app/models/language.dart';
+import 'package:perfect/app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserPreferences {
@@ -17,14 +18,19 @@ class UserPreferences {
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  // Future save(UserCredential user) async {
-  //   await _sharedPreferences.setBool('logged_in', true);
-  //   await _sharedPreferences.setString('id', user.user!.uid);
-  //   await _sharedPreferences.setString('email', user.user!.email!);
-  // }
+  Future save(User user) async {
+    await _sharedPreferences.setBool('logged_in', true);
+    await _sharedPreferences.setInt('id', user.data.id!);
+    await _sharedPreferences.setString('token', user.token);
+    await _sharedPreferences.setString('email', user.data.email!);
+    await _sharedPreferences.setString('name', user.data.name!);
+    await _sharedPreferences.setString('type', user.data.type!);
+  }
 
-  String get id => _sharedPreferences.getString('id') ?? "0";
+  int get id => _sharedPreferences.getInt('id') ?? 0;
   String get email => _sharedPreferences.getString('email') ?? "";
+  String get name => _sharedPreferences.getString('name') ?? "";
+  String get type => _sharedPreferences.getString('type') ?? "";
   String get codeLang => _sharedPreferences.getString('codeLang') ?? "en";
 
   bool get isLoggedIn => _sharedPreferences.getBool('logged_in') ?? false;
@@ -41,5 +47,11 @@ class UserPreferences {
   }
   Future<bool> setLang({required String langCode}) async{
     return await _sharedPreferences.setString("codeLang", langCode);
+  }
+
+  String getToken(){
+    String token = _sharedPreferences.getString("token") ?? "";
+    return "Bearer $token";
+    // return token;
   }
 }

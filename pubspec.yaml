@@ -1,5 +1,5 @@
 name: perfect
-version: 1.0.0+1
+version: 1.0.2
 publish_to: none
 description: A new Flutter project.
 environment: 
@@ -11,6 +11,22 @@ dependencies:
   cached_network_image: ^3.2.0
   image_picker: ^0.8.4+5
   shared_preferences: ^2.0.12
+  http: ^0.13.4
+  url_launcher: ^6.0.18
+  google_maps_flutter: ^2.1.2
+  flutter_google_street_view: ^2.2.6
+  flutter_google_places: ^0.3.0
+  uuid: ^3.0.5
+  geocoding: ^2.0.2
+  share_plus: ^3.0.4
+  youtube_player_flutter: ^8.0.0
+  in_app_purchase: ^0.4.0
+  html: ^0.15.0
+  purchases_flutter: ^3.9.5
+
+  #  in_app_purchase: ^2.0.1
+#  purchases_flutter: ^3.9.3
+
   flutter: 
     sdk: flutter
   dropdown_search: ^2.0.1

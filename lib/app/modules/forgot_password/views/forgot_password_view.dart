@@ -41,21 +41,29 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
         controller.email = value!;
       },
       validator: (value) {
-        return controller.validateEmail(value!);
+        if(value!.isEmpty){
+          return controller.validateAllField(value!);
+        }else{
+          return controller.validateEmail(value);
+        }
       },
     );
   }
 
   Widget _buildSendButton(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: OutlinedButton(
-        style: raisedButtonStyle,
-        onPressed: () {
-          controller.checkForm();
-        },
-        child: Text('Send'),
-      ),
+    return GetX<ForgotPasswordController>(
+      builder: (val) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          child: OutlinedButton(
+            style: raisedButtonStyle,
+            onPressed: () {
+              controller.checkFormForget();
+            },
+            child:val.click.value ? SizedBox(height: 12,width: 12,child: CircularProgressIndicator(color: Colors.white,))  : Text('Send'),
+          ),
+        );
+      },
     );
   }
 

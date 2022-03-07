@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:perfect/app/data/constants.dart';
+import 'package:perfect/app/models/user.dart';
 import 'package:perfect/app/routes/app_pages.dart';
+import 'package:perfect/preferences/user_preferences.dart';
 
 import '../controllers/registration_controller.dart';
 
@@ -117,15 +119,22 @@ class RegistrationView extends GetView<RegistrationController> {
   }
 
   Widget _buildSignUpButton(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: OutlinedButton(
-        style: raisedButtonStyle,
-        onPressed: () {
-          controller.checkRegisterForm();
-        },
-        child: Text('Create an account'),
-      ),
+    return GetX<RegistrationController>(
+      builder: (val) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          child: OutlinedButton(
+            style: raisedButtonStyle,
+            onPressed: () async{
+              if(controller.checkRegisterForm()){
+                User? user = await controller.doRegister();
+                UserPreferences().save(user!);
+              }
+            },
+            child: val.click.value ? SizedBox(height: 12,width: 12,child: CircularProgressIndicator(color: Colors.white,))  : Text('Create an account'),
+          ),
+        );
+      },
     );
   }
 

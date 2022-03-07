@@ -7,6 +7,7 @@ class MapController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
   }
 
   @override
